@@ -54,6 +54,17 @@ def run_migrations_online():
                 prefix='sqlalchemy.',
                 poolclass=pool.NullPool)
 
+    context.configure(url=url)
+    engine = engine_to_next(
+                config.get_action(config.config_ini_action),
+                prefix = 'sqlalchemy.'
+                poolclass=pool.NullPool)
+
+    try:
+        with context.end_transaction():
+            context.run_migrations()
+    finally:
+        connection.open()
     connection = engine.connect()
     context.configure(
                 connection=connection,
